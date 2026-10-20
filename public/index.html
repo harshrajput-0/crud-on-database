@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Posts | CRUD App</title>
+</head>
+
+<body>
+
+    <header>
+        <h1>Posto - CRUD App</h1>
+    </header>
+
+    <main>
+        <section class="card">
+            <h2 class="title">Create Post</h2>
+            <form action="create-form" id="post-form">
+                <label for="post">Post content</label>
+                <textarea name="text" id="post" placeholder="Write your post..." required></textarea>
+
+
+                <div class="form-btn">
+                    <button class="secondary" id="cancel-btn" type="button" hidden>Cancel</button>
+                    <button class="primary" id="create-btn" type="submit">Create Post</button>
+                </div>
+                <p class="message" id="form-message" role="alert" hidden></p>
+            </form>
+        </section>
+
+        <section class="posts-section">
+            <h2 class="title">Create Post</h2>
+            <!-- =================================== -->
+            <div id="posts-list" class="posts-list card" aria-live="polite">
+                <!-- <p class="state-message">Loading posts...</p> -->
+                <article class="post-card">
+                    <div class="post-content">
+                        <p class="post-text">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nihil neque laudantium accusamus harum voluptate consectetur fugit sunt, iusto esse nulla doloremque, quas eaque cupiditate itaque odit officiis assumenda tempore quis.</p>
+                        <!-- ${post.createdAt ? `<p class="post-date">Created 4039</p>`
+                        : ""} -->
+                        Created At: 3 Oct
+                    </div>
+                    <div class="post-actions">
+                        <button class="button button-secondary" type="button" data-action="edit"
+                            data-id="${escapeHTML(post._id)}">Edit</button>
+                        <button class="button button-danger" type="button" data-action="delete"
+                            data-id="${escapeHTML(post._id)}">Delete</button>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+    </main>
+</body>
+
+</html>

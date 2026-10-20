@@ -119,7 +119,7 @@ export async function deletePost(req, res) {
         res.status(200).json(post);
 
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: "Internal Server error" });
         console.error("Error:", error.message);
     }
 }
