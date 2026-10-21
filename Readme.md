@@ -1,65 +1,42 @@
-# Posts API
+# Posto — Posts CRUD App
 
-A simple REST API built with Node.js and Express.js to perform CRUD (Create, Read, Update, Delete) operations on posts. Posts are stored in an in-memory array.
+A simple full-stack CRUD application for creating, viewing, editing, and deleting posts. This version has been adapted from an earlier in-memory posts API to use MongoDB for persistent storage, with a basic browser-based interface.
 
 ## Features
 
-- Get all posts
-- Get a post by ID
-- Create a new post
-- Update an existing post
-- Delete a post
-- Validate post text
-
+- Create a post with text content
+- View all posts, newest first
+- Edit and delete existing posts
+- Refresh the post list
+- Validate empty post content
+- Store posts in MongoDB
+- Show post creation dates
 
 ## Tech Stack
 
-- Node.js
-- Express.js
-- Postman for testing
+- **Frontend:** HTML, CSS, JavaScript, Axios
+- **Backend:** Node.js, Express 5
+- **Database:** MongoDB with Mongoose
 
-## Project Structure
+## Run Locally
 
-```text
-posts-api/
-├── src/
-│   ├── controllers.js
-│   └── routes.js
-├── app.js
-├── server.js
-├── package.json
-└── README.md
-```
-
-## Installation
-
-### 1. Install Node.js
-
-Make sure Node.js and npm are installed.
-
-Check their versions:
-
-```bash
-node -v
-npm -v
-```
-
-### 2. Clone the repository
-
-```bash
-git clone https://github.com/harshrajput-0/rest-api-with-express.git
-cd rest-api-with-express
-```
-
-### 3. Install dependencies
+### 1. Install dependencies
 
 ```bash
 npm install
 ```
 
-## Run the Server
+### 2. Configure the database
 
-Start the server:
+Create a `.env` file in the project root and add your MongoDB connection string:
+
+```env
+MONGODB_URI=mongodb://127.0.0.1:27017/posto
+```
+
+Use your own MongoDB URI if your database is hosted elsewhere. Keep `.env` private and do not commit credentials.
+
+### 3. Start the app
 
 ```bash
 npm start
@@ -71,152 +48,52 @@ For development with automatic restarts:
 npm run dev
 ```
 
-The server should be available at:
+Open [http://localhost:3000](http://localhost:3000).
 
-```text
-http://localhost:3000
-```
+## API Endpoints
 
-The API base URL is:
+Base URL: `http://localhost:3000/api/posts`
 
-```text
-http://localhost:3000/api/posts
-```
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/posts` | Get all posts |
+| GET | `/api/posts/:id` | Get one post |
+| POST | `/api/posts` | Create a post |
+| PUT | `/api/posts/:id` | Update a post |
+| DELETE | `/api/posts/:id` | Delete a post |
 
-
-## API Routes
-
-| Method | Endpoint | Description | Success Status |
-|---|---|---|---|
-| GET | `/api/posts` | Get all posts | 200 |
-| GET | `/api/posts/:id` | Get a post by ID | 200 |
-| POST | `/api/posts` | Create a post | 201 |
-| PUT | `/api/posts/:id` | Update a post | 200 |
-| DELETE | `/api/posts/:id` | Delete a post | 200 |
-
-## Testing with Postman
-
-Open Postman and create requests using the URLs and request bodies below.
-
-### 1. Get All Posts
-
-**Method:** `GET`
-
-```text
-http://localhost:3000/api/posts
-```
-
-Expected status: `200 OK`
-
-Example response:
-
-```json
-[
-  {
-    "id": 1,
-    "text": "Hello world!"
-  }
-]
-```
-
-### 2. Get a Single Post
-
-**Method:** `GET`
-
-```text
-http://localhost:3000/api/posts/1
-```
-
-Expected status: `200 OK`
-
-Example response:
+For create and update requests, send JSON with a non-empty `text` field:
 
 ```json
 {
-  "id": 1,
-  "text": "Hello world!"
+  "text": "A post message"
 }
 ```
 
-To test a nonexistent post, use `/api/posts/999`. Expected status: `No post found`.
+## Decisions and Changes
 
-### 3. Create a Post
+- Replaced the earlier in-memory array with a **MongoDB collection**, so posts remain saved when the server restarts.
+- Kept the project lightweight: the frontend uses plain HTML, CSS, and JavaScript rather than introducing a frontend framework.
+- Used Axios in the browser to call the Express API.
+- Kept API routes and controller logic in separate files to make the backend easier to follow.
+- Added basic validation for empty text and invalid or missing post IDs, with appropriate HTTP status codes.
+- Sorted posts by creation date so the newest posts appear first.
 
-**Method:** `POST`
+## Project Structure
 
 ```text
-http://localhost:3000/api/posts
+├── public/
+│   ├── index.html
+│   ├── script.js
+│   └── style.css
+├── src/
+│   ├── controllers.js
+│   ├── db.js
+│   ├── post.model.js
+│   └── routes.js
+├── app.js
+├── server.js
+├── example.env
+├── package.json
+└── README.md
 ```
-
-In Postman, select **Body → raw → JSON**.
-
-Request body:
-
-```json
-{
-  "text": "My first post"
-}
-```
-
-Expected status: `201 Created`
-
-Example response:
-
-```json
-{
-  "message": "Post created successfully"
-}
-```
-
-### 4. Update a Post
-
-**Method:** `PUT`
-
-```text
-http://localhost:3000/api/posts/1
-```
-
-Select **Body → raw → JSON**.
-
-Request body:
-
-```json
-{
-  "text": "Updated post text"
-}
-```
-
-Expected status: `200 OK`
-
-Example response:
-
-```json
-{
-  "id": 1,
-  "text": "Updated post text"
-}
-```
-
-### 5. Delete a Post
-
-**Method:** `DELETE`
-
-```text
-http://localhost:3000/api/posts/1
-```
-
-Expected status: `200 OK`
-
-Example response:
-
-```json
-{
-  "message": "Post deleted successfully"
-}
-```
-
-## Important Notes
-
-- Posts are stored in an in-memory JavaScript array, not a database.
-- All posts are reset when the server restarts.
-- The ID counter starts at `2` and increments when posts are created.
