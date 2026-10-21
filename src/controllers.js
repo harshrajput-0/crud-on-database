@@ -67,29 +67,25 @@ export async function createPost(req, res) {
 
 
 // UPDATE POST |--------------------------
+// UPDATE POST
 export async function updatePost(req, res) {
-
     try {
         if (!validateObjectId(req.params.id)) {
             return res.status(404).json({ error: "Post not found" });
         }
 
         if (invalidText(req.body.text)) {
-            return res.status(400).json({
-                error: "Text is required",
-            });
+            return res.status(400).json({ error: "Text is required" });
         }
 
         const post = await Post.findByIdAndUpdate(
             req.params.id,
             { text: req.body.text },
-            { new: true }
+            { returnDocument: "after" }  // ✅ replaces { new: true }
         );
 
         if (!post) {
-            return res.status(404).json({
-                error: "Post not found"
-            })
+            return res.status(404).json({ error: "Post not found" });
         }
 
         res.status(200).json(post);

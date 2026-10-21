@@ -1,19 +1,14 @@
 const API_URL = "/api/posts";
 
 const form = document.getElementById("post-form");
-const formTitle = document.getElementById("form-title");
 const formMessage = document.getElementById("form-message");
-
 const textarea = document.getElementById("post");
 const postsList = document.getElementById("posts-list");
-
-const submitBtn = document.getElementById("submit-btn");
+const createBtn = document.getElementById("create-btn"); // ✅ was "submit-btn"
 const cancelBtn = document.getElementById("cancel-btn");
-
-
+const refreshBtn = document.getElementById("refresh-btn");
 
 let editingId = null;
-
 
 function showMessage(message, isError = false) {
   formMessage.textContent = message;
@@ -41,59 +36,59 @@ function renderPosts(posts) {
   `).join("");
 }
 
-
-// Send request to fetch post 
 async function loadPost() {
   try {
     postsList.innerHTML = "<p class='state-message'>Loading...</p>";
-    // Sending request
     const response = await axios.get(API_URL);
     renderPosts(response.data);
   } catch (error) {
     postsList.innerHTML = "<p class='state-message'>Failed to load posts.</p>";
   }
-
 }
 
+function resetForm() {
+  editingId = null;
+  textarea.value = "";
+  cancelBtn.hidden = true;
+  createBtn.textContent = "Create Post";
+}
 
-// Creating Post by form submit 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
-
   const text = textarea.value.trim();
 
   try {
     if (editingId) {
       await axios.put(`${API_URL}/${editingId}`, { text });
-      showMessage("Post Updated");
+      showMessage("Post updated!");
       resetForm();
     } else {
-      await axios.post(`${API_URL}`, { text });
-      showMessage("Post creatd");
+      await axios.post(API_URL, { text });
+      showMessage("Post created!");
       textarea.value = "";
     }
-
     loadPost();
   } catch (error) {
-    showMessage("Something went wrong");
+    showMessage("Something went wrong.", true);
     console.error(error.response?.data?.error);
   }
-})
+});
 
-// Cancel Button
 cancelBtn.addEventListener("click", resetForm);
 
+refreshBtn.addEventListener("click", loadPost); // ✅ refresh button
+
 postsList.addEventListener("click", async (e) => {
-  const btn = e.target.closest("[data-section]");
+  const btn = e.target.closest("[data-action]"); // ✅ was [data-section]
   if (!btn) return;
 
-  const { id, data } = btn.dataset;
+  const { id, action } = btn.dataset; // ✅ was { id, data }
 
   if (action === "delete") {
     if (!confirm("Delete this post?")) return;
     try {
       await axios.delete(`${API_URL}/${id}`);
-      loadPosts();
+      loadPost(); // ✅ was loadPosts()
     } catch (err) {
       alert("Failed to delete post.");
     }
@@ -106,19 +101,7 @@ postsList.addEventListener("click", async (e) => {
     cancelBtn.hidden = false;
     textarea.focus();
     window.scrollTo({ top: 0, behavior: "smooth" });
-
   }
-})
+});
 
-
-
-
-function resetForm() {
-  editingId = null;
-  textarea.value = "";
-  cancelBtn.hidden = true;
-  createBtn.textContent = "Create Post";
-}
-
-
-loadPosts();
+loadPost(); // ✅ was loadPosts()
